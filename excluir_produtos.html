@@ -1,0 +1,59 @@
+<?php
+// Iniciar a sessão
+session_start();
+
+
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <title>Excluir Produtos</title>
+</head>
+<body>
+    <h2>Excluir Produtos</h2>
+    <form action="excluir_produtos.php" method="post">
+        <table border="1">
+            <tr>
+                <th>Selecionar</th>
+                <th>Imagem</th>
+                <th>Nome do Produto</th>
+            </tr>
+
+            <?php
+            // Conexão com o banco de dados (substitua os valores conforme suas configurações)
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
+            $dbname = "PizzaDelivery";
+
+            // Criando a conexão
+            $conn = new mysqli($servername, $username, $password, $dbname);
+
+            // Verificando a conexão
+            if ($conn->connect_error) {
+                die("Erro na conexão com o banco de dados: " . $conn->connect_error);
+            }
+
+            // Consulta para buscar os produtos na tabela
+            $sql = "SELECT * FROM `product`";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td><input type='checkbox' name='selected_products[]' value='" . $row['id'] . "'></td>";
+                    echo "<td><img src='" . $row['product_image'] . "' width='50' height='50'></td>";
+                    echo "<td>" . $row['product_name'] . "</td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='3'>Nenhum produto encontrado</td></tr>";
+            }
+
+            $conn->close();
+            ?>
+        </table><br>
+        <input type="submit" value="Excluir Produtos Selecionados">
+    </form>
+</body>
+</html>
